@@ -44,15 +44,16 @@ async function run() {
         const usersCollection = database.collection('users');
         const carsCollection = database.collection('cars');
 
-        app.get('/cars/bestCars', async (req, res) => {
-            const cars = carsCollection.find({});
+        app.get('/cars/bestCars/:limit', async (req, res) => {
+            let limit = req.params.limit;
+            limit = parseInt(limit);
+            const cars = carsCollection.find({}).limit(limit);
             const result = await cars.toArray();
             res.json(result);
         })
 
         app.post('/admin/addCar', async (req, res) => {
             const data = req.body;
-            console.log(data);
             const result = await carsCollection.insertOne(data);
             res.json(result);
         });
