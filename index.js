@@ -43,6 +43,13 @@ async function run() {
         const database = client.db('city_car_house');
         const usersCollection = database.collection('users');
         const carsCollection = database.collection('cars');
+        const customerOrderCollection = database.collection('customer_order');
+
+        app.post('/customerOrder', async (req, res) => {
+            const data = req.body;
+            const result = await customerOrderCollection.insertOne(data);
+            res.json(result);
+        })
 
         app.get('/cars/bestCars/:limit', async (req, res) => {
             let limit = req.params.limit;
@@ -50,7 +57,7 @@ async function run() {
             const cars = carsCollection.find({}).limit(limit);
             const result = await cars.toArray();
             res.json(result);
-        })
+        });
 
         app.post('/admin/addCar', async (req, res) => {
             const data = req.body;
