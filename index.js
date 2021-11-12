@@ -45,6 +45,19 @@ async function run() {
         const usersCollection = database.collection('users');
         const carsCollection = database.collection('cars');
         const customerOrderCollection = database.collection('customer_order');
+        const customerReviewCollection = database.collection('customer_review');
+
+        app.post('/customerReview', async (req, res) => {
+            const data = req.body;
+            const result = await customerReviewCollection.insertOne(data);
+            res.json(result);
+        });
+
+        app.get('/customerReview', async (req, res) => {
+            const feedback = customerReviewCollection.find({});
+            const result = await feedback.toArray();
+            res.json(result);
+        })
 
         app.post('/customerOrder', async (req, res) => {
             const data = req.body;
@@ -60,14 +73,31 @@ async function run() {
             res.json(result);
         });
 
-        /* app.get('/myOrder/:carId', async (req, res) => {
-            const id = req.params.carId;
-            const query = { _id: ObjectId(id) };
-            const order = carsCollection.find(query);
+        app.get('/allOrder', async (req, res) => {
+            const order = customerOrderCollection.find({});
             const result = await order.toArray();
-            console.log(result);
             res.json(result);
-        }); */
+        });
+
+        app.delete('/deleteOrder/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await customerOrderCollection.deleteOne(query);
+            res.json(result);
+        });
+
+        app.put('/status/:id', async (req, res) => {
+            const data = req.body;
+            const { id } = req.params;
+            const query = {
+                _id: ObjectId(id)
+            };
+            const updateDocument = {
+                $set: data
+            };
+            const result = await customerOrderCollection.updateOne(query, updateDocument, { upsert: true });
+            res.json(result);
+        })
 
         app.get('/cars/bestCars/:limit', async (req, res) => {
             let limit = req.params.limit;
