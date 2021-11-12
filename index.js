@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const admin = require("firebase-admin");
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 
 const app = express();
@@ -49,7 +50,24 @@ async function run() {
             const data = req.body;
             const result = await customerOrderCollection.insertOne(data);
             res.json(result);
-        })
+        });
+
+        app.get('/myOrder/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const order = customerOrderCollection.find(query);
+            const result = await order.toArray();
+            res.json(result);
+        });
+
+        /* app.get('/myOrder/:carId', async (req, res) => {
+            const id = req.params.carId;
+            const query = { _id: ObjectId(id) };
+            const order = carsCollection.find(query);
+            const result = await order.toArray();
+            console.log(result);
+            res.json(result);
+        }); */
 
         app.get('/cars/bestCars/:limit', async (req, res) => {
             let limit = req.params.limit;
