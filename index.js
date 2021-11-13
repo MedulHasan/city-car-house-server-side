@@ -107,6 +107,13 @@ async function run() {
             res.json(result);
         });
 
+        app.delete('/deleteCar/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await carsCollection.deleteOne(query);
+            res.json(result);
+        })
+
         app.post('/admin/addCar', async (req, res) => {
             const data = req.body;
             const result = await carsCollection.insertOne(data);
