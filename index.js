@@ -47,12 +47,14 @@ async function run() {
         const customerOrderCollection = database.collection('customer_order');
         const customerReviewCollection = database.collection('customer_review');
 
+        // customer review post
         app.post('/customerReview', async (req, res) => {
             const data = req.body;
             const result = await customerReviewCollection.insertOne(data);
             res.json(result);
         });
 
+        // customer review post
         app.get('/customerReview', async (req, res) => {
             const feedback = customerReviewCollection.find({});
             const result = await feedback.toArray();
