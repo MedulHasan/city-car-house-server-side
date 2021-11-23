@@ -19,6 +19,8 @@ const client = new MongoClient(uri, {
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
@@ -46,6 +48,28 @@ async function run() {
         const carsCollection = database.collection("cars");
         const customerOrderCollection = database.collection("customer_order");
         const customerReviewCollection = database.collection("customer_review");
+
+        // payment
+        app.post("/create-payment-intent", async (req, res) => {
+            const paymentInfo = req.body;
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: "usd",
+                amount: paymentInfo.price * 100,
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+            });
+            console.log(paymentIntent);
+            res.json({ clientSecret: paymentIntent.client_secret });
+        });
+
+        // find id for payment
+        app.get("/payment/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await carsCollection.findOne(query);
+            res.json(result);
+        });
 
         // customer review post
         app.post("/customerReview", async (req, res) => {
