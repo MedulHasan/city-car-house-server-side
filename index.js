@@ -19,9 +19,7 @@ const client = new MongoClient(uri, {
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-const stripe = require("stripe")(
-    "sk_test_51JvuqtDIBQXTyseWUhQdBxWtY1cGo372PW37ML66VFUlrMPbs7hVqYTetXdSGR3u3pFmIc1iAtdifBilGe9Qu1o200HT0eOLe5"
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
