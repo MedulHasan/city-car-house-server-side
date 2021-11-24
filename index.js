@@ -19,7 +19,9 @@ const client = new MongoClient(uri, {
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const stripe = require("stripe")(
+    "sk_test_51JvuqtDIBQXTyseWUhQdBxWtY1cGo372PW37ML66VFUlrMPbs7hVqYTetXdSGR3u3pFmIc1iAtdifBilGe9Qu1o200HT0eOLe5"
+);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -53,13 +55,13 @@ async function run() {
         app.post("/create-payment-intent", async (req, res) => {
             const paymentInfo = req.body;
             const paymentIntent = await stripe.paymentIntents.create({
-                currency: "usd",
                 amount: paymentInfo.price * 100,
+                currency: "eur",
                 automatic_payment_methods: {
                     enabled: true,
                 },
             });
-            console.log(paymentIntent);
+            // console.log(paymentIntent);
             res.json({ clientSecret: paymentIntent.client_secret });
         });
 
