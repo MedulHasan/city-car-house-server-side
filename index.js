@@ -50,7 +50,7 @@ async function run() {
         const customerReviewCollection = database.collection("customer_review");
 
         // payment
-        app.post("/create-payment-intent", async (req, res) => {
+        app.post("/create-payment-intents", async (req, res) => {
             const paymentInfo = req.body;
             console.log(paymentInfo);
             const paymentIntent = await stripe.paymentIntents.create({
